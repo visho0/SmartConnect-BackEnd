@@ -12,6 +12,18 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
+
+# Intentar importar decouple, si no está disponible usar valores por defecto
+try:
+    from decouple import config
+except ImportError:
+    # Si decouple no está instalado, usamos valores por defecto
+    def config(key, default=None, cast=None):
+        value = os.environ.get(key, default)
+        if cast:
+            return cast(value)
+        return value
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +33,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bruzbdm$qvu#tho-_ujwy0=7@#6^ixc!&8_ah^nggc$6*(0juu'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-bruzbdm$qvu#tho-_ujwy0=7@#6^ixc!&8_ah^nggc$6*(0juu')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']  # Para AWS, cambiar en producción
+# ALLOWED_HOSTS - puede ser una lista separada por comas en .env
+ALLOWED_HOSTS_STR = config('ALLOWED_HOSTS', default='*')
+if ALLOWED_HOSTS_STR and ALLOWED_HOSTS_STR != '*':
+    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_STR.split(',') if host.strip()]
+else:
+    ALLOWED_HOSTS = ['*'] if DEBUG else []
 
 
 # Application definition
@@ -82,12 +99,34 @@ WSGI_APPLICATION = 'smartconnect.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Si hay variables de entorno para PostgreSQL, usarlas (producción)
+# Si no, usar SQLite (desarrollo local)
+DB_NAME = config('DB_NAME', default=None)
+DB_USER = config('DB_USER', default=None)
+DB_PASSWORD = config('DB_PASSWORD', default=None)
+DB_HOST = config('DB_HOST', default=None)
+DB_PORT = config('DB_PORT', default='5432')
+
+if DB_NAME and DB_USER and DB_PASSWORD and DB_HOST:
+    # Configuración para PostgreSQL (RDS)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
     }
-}
+else:
+    # Configuración para SQLite (desarrollo local)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
