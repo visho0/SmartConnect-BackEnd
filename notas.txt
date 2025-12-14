@@ -1,0 +1,3 @@
+nombre db: dbbackend4
+usuario maestro: administrador
+contraseña: contradb123.
