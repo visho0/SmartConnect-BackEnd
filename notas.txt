@@ -1,3 +1,4 @@
 nombre db: dbbackend4
 usuario maestro: administrador
 contraseña: contradb123.
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1ODM5NTkwLCJpYXQiOjE3NjU3NTMxOTAsImp0aSI6IjljOTdkMzU0ODUwMzQ1ZWZiZDlmZWFmNjFjN2Y4MzVmIiwidXNlcl9pZCI6MSwicm9sIjoiYWRtaW4iLCJ1c2VybmFtZSI6ImFkbWluIn0.CJz0rRvxMefCT_sUM3USwfIG5qq9Mkz-UjsQDq9WXsw"

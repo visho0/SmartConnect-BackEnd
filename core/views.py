@@ -56,7 +56,7 @@ def info_view(request):
     Endpoint /api/info/ - Información del proyecto (sin autenticación requerida)
     """
     return Response({
-        "autor": ["Tu Nombre"],  # Cambiar por tu nombre
+        "autor": ["Pablo Carvajal, Vicente Durán"],  # Cambiar por tu nombre
         "asignatura": "Programación Back End",
         "proyecto": "SmartConnect API",
         "descripcion": "API RESTful para sistema de control de acceso inteligente con sensores RFID, gestión de usuarios, departamentos, barreras y eventos de acceso. Diseñada para integración con aplicaciones móviles e IoT.",
